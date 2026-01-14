@@ -11,6 +11,29 @@ app.get('/', (req, res) => {
     res.render('home.ejs');
 });
 
+app.get('/signup', (req, res) => {
+    res.render('signup.ejs');
+});
+
+app.post('/signup', (req, res) => {
+    var username = req.body.username;
+    var password = req.body.password;
+    if (!username || username === "" || !password || password === "") {
+        throw new Error("Username or Password Missing")
+    }
+    if (password.length < 8) {
+        throw new Error("Password Too Short")
+    }
+});
+
+app.get('/login', (req, res) => {
+    res.render('login.ejs');
+});
+
+app.post('login', (req, res) => {
+    //login logic here
+})
+
 app.get('adopt.ejs', (req, res) => {
     res.render('adopt.ejs');
 });
