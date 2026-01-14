@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Pet Page</title>
+    <style>
+        square {
+            width: 100px;
+            height: 100px;
+            background-color: #E48400;
+            place-items: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -12,6 +20,7 @@
     </h1>
     <p>Hunger: <%= pet.Hunger %>/50</p>
     <button onclick="feedPet()">Feed Pet</button>
+    <div class="square"></div>
     <script>
         // Create Pet Hunger stat and drain
         let petHunger = 50;
