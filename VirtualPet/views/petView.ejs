@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Pet Page</title>
+</head>
+
+<body>
+    <h1>This is <%= pet.name %>
+    </h1>
+    <p>Hunger: <%= pet.Hunger %>/50</p>
+    <button onclick="feedPet()">Feed Pet</button>
+    <script>
+        // Create Pet Hunger stat and drain
+        let petHunger = 50;
+        function petHungerDrain() {
+            if (petHunger > 0) {
+                petHunger -= 1;
+                console.log("Pet Hunger:", petHunger);
+            } else {
+                console.log("Hunger level has reached 0.");
+            }
+        }
+        setInterval(petHungerDrain, 60000);
+        // Button to feed pet
+        function feedPet() {
+            if (petHunger < 50) {
+                petHunger += 1;
+                if (petHunger > 50) petHunger = 50; // Cap at 50
+            } else {
+                console.log("Pet is full.");
+            }
+        }
+
+    </script>
+</body>
+
+</html>
