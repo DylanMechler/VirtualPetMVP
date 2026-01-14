@@ -1,10 +1,23 @@
 const express = require('express');
 const app = express();
 const sqlite3 = require('sqlite3').verbose();
+const jwt = require('jsonwebtoken');
+const session = require('express-session');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+
+app.use(session({
+    secret: 'secretString',
+    resave: false,
+    saveUninitialized: false
+}));
+
+function isAuthenticated(req, res, next) {
+    if (req.session.user) next()
+    else res.redirect(`/login`);
+};
 
 //Routes
 app.get('/', (req, res) => {
