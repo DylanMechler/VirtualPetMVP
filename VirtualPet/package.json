@@ -2,7 +2,6 @@
   "name": "virtualpet",
   "version": "1.0.0",
   "main": "app.js",
-  "devDependencies": {},
   "scripts": {
     "init-database": "node scripts/initDatabase.js",
     "run": "node app.js"
