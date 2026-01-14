@@ -10,9 +10,7 @@
 <body>
     <h1>Adopt A Pet</h1>
     <form id="adoptionForm" action="/adopt" method="POST">
-        <input type="text" name="petName" value="<%= pet.name %>"><br>
-        <input type="hidden" name="petID" value="<%= pet.id %>">
-        <input type="hidden" name="uID" value="<%= user.id %>">
+        <input type="text" name="petName"><br>
         <input type="submit" value="Adopt Pet">
     </form>
     <script>

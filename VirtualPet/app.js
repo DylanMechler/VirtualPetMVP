@@ -88,9 +88,11 @@ app.get('adopt.ejs', (req, res) => {
 
 app.post('adopt.ejs', (req, res) => {
     const db = sqlite3.Database('database.sqlite');
-    const { petName, petID, uID } = req.body;
+    var petName = req.body.petName;
+    var uID = req.session.userID;
 
-    db.run('INSERT INTO pets (petName, petID, uID) VALUES (?, ?, ?)', [petName, petID, uID], function (err) {
+
+    db.run('INSERT INTO pets (petName, uID) VALUES (?, ?)', [petName, uID], function (err) {
         if (err) {
             return console.error(err.message);
         }
