@@ -27,3 +27,22 @@ db.run(`CREATE TABLE "users" (
         }
     });
 });
+db.run(`CREATE TABLE "Pets" (
+	"petName"	TEXT NOT NULL,
+	"petID"	INTEGER NOT NULL UNIQUE,
+	"uID"	INTEGER NOT NULL UNIQUE,
+	PRIMARY KEY("petID" AUTOINCREMENT)
+)`, (err) => {
+    if (err) {
+        console.error(`Error Creating Pets Table: ${err.message}`);
+    } else {
+        console.log("Pets Table Created Successfully");
+    }
+    db.close((err) => {
+        if (err) {
+            console.error(`Error Closing Database: ${err.message}`);
+        } else {
+            console.log("Database Connection Closed");
+        }
+    });
+});
