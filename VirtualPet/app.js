@@ -53,7 +53,7 @@ app.post('/signup', (req, res) => {
                 }
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
                 req.session.user = username;
-                db.get(`SELECT * FROM users WHERE username = ? AND password = ?`, [username, hashedPassword], (err, row) => {
+                db.get(`SELECT * FROM users WHERE username = ? AND password = ?`, [username, password], (err, row) => {
                     if (err) {
                         throw err;
                     }
@@ -78,15 +78,35 @@ app.get('/login', (req, res) => {
     res.render('login.ejs');
 });
 
-app.post('login', (req, res) => {
-    //login logic here
+app.post('/login', (req, res) => {
+    try {
+        const username = req.body.username;
+        const password = req.body.password;
+        if (!username || !password || username === "" || password === "") {
+            throw new Error("Username or password missing");
+        }
+        db.get(`SELECT * FROM users WHERE username = ? AND password = ?`, [username, password], (err, row) => {
+            if (err) {
+                throw err;
+            }
+            if (row) {
+                req.session.user = username;
+                req.session.userID = row.uid;
+                res.redirect('/');
+            } else {
+                res.redirect('/login');
+            }
+        })
+    } catch (error) {
+        res.redirect('/login');
+    }
 })
 
-app.get('adopt.ejs', (req, res) => {
+app.get('/adopt', isAuthenticated, (req, res) => {
     res.render('adopt.ejs');
 });
 
-app.post('adopt.ejs', (req, res) => {
+app.post('/adopt', (req, res) => {
     const db = sqlite3.Database('database.sqlite');
     var petName = req.body.petName;
     var uID = req.session.userID;
@@ -103,7 +123,7 @@ app.post('adopt.ejs', (req, res) => {
     db.close();
 });
 
-app.get('petView.ejs', (req, res) => {
+app.get('/petView', isAuthenticated, (req, res) => {
     res.render('petView.ejs');
 });
 
