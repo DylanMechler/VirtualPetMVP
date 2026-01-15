@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Pet Page</title>
     <style>
-        square {
+        #square {
             width: 100px;
             height: 100px;
             background-color: #E48400;
@@ -16,28 +16,31 @@
 </head>
 
 <body>
-    <h1>This is <%= pet.name %>
+    <h1>This is <%= petName %>
     </h1>
-    <p>Hunger: <%= pet.Hunger %>/50</p>
+    <p id="hungerDisplay">Hunger: <%= petHunger %>/50</p>
     <button onclick="feedPet()">Feed Pet</button>
     <div class="square"></div>
     <script>
         // Create Pet Hunger stat and drain
+        const hungerDisplay = document.getElementById('hungerDisplay');
         let petHunger = 50;
         function petHungerDrain() {
             if (petHunger > 0) {
                 petHunger -= 1;
                 console.log("Pet Hunger:", petHunger);
+                hungerDisplay.innerText = "Hunger:" + petHunger + "/50";
             } else {
                 console.log("Hunger level has reached 0.");
             }
         }
-        setInterval(petHungerDrain, 60000);
+        setInterval(petHungerDrain, 10000);
         // Button to feed pet
         function feedPet() {
+            console.log(petHunger)
             if (petHunger < 50) {
                 petHunger += 1;
-                if (petHunger > 50) petHunger = 50; // Cap at 50
+                hungerDisplay.innerText = "Hunger:" + petHunger + "/50";
             } else {
                 console.log("Pet is full.");
             }
