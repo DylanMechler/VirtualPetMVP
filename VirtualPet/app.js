@@ -1,8 +1,7 @@
 const express = require('express');
-const app = express();
 const sqlite3 = require('sqlite3').verbose();
-const jwt = require('jsonwebtoken');
 const session = require('express-session');
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -123,7 +122,7 @@ app.post('/adopt', (req, res) => {
 
 app.get('/petView', isAuthenticated, (req, res) => {
     let userID = req.session.userID;
-    let petName = "Pet"
+    let petName = "Pet";
     let petHunger = 50;
     db.get(`SELECT * FROM Pets WHERE uID = ?`, [userID], (err, row) => {
         if (err) {
@@ -132,11 +131,23 @@ app.get('/petView', isAuthenticated, (req, res) => {
         if (row) {
             petName = row.petName;
             petHunger = row.petHunger;
+            res.render('petView.ejs', { petName: petName, petHunger: petHunger });
         } else {
             res.redirect('/adopt');
         }
     })
-    res.render('petView.ejs', { petName: petName, petHunger: petHunger });
+});
+
+app.post('/petView', (req, res) => {
+    let userID = req.session.userID;
+    const hunger = req.body.petHunger;
+    db.run(`UPDATE Pets SET petHunger = ? WHERE uID = ?`, [hunger, userID], function (err) {
+        if (err) {
+            return console.error(err.message);
+        } else {
+            console.log("Hunger Saved");
+        }
+    });
 });
 
 app.listen(3000, () => {
