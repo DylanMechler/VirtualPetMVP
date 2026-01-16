@@ -19,13 +19,6 @@ db.run(`CREATE TABLE "users" (
     } else {
         console.log("Users Table Created Successfully");
     }
-    db.close((err) => {
-        if (err) {
-            console.error(`Error Closing Database: ${err.message}`);
-        } else {
-            console.log("Database Connection Closed");
-        }
-    });
 });
 db.run(`CREATE TABLE "Pets" (
 	"petName"	TEXT NOT NULL,

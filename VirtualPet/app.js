@@ -107,12 +107,10 @@ app.get('/adopt', isAuthenticated, (req, res) => {
 });
 
 app.post('/adopt', (req, res) => {
-    const db = sqlite3.Database('database.sqlite');
     var petName = req.body.petName;
     var uID = req.session.userID;
 
-
-    db.run('INSERT INTO pets (petName, uID) VALUES (?, ?)', [petName, uID], function (err) {
+    db.run('INSERT INTO Pets (petName, uID) VALUES (?, ?)', [petName, uID], function (err) {
         if (err) {
             return console.error(err.message);
         }
@@ -124,7 +122,21 @@ app.post('/adopt', (req, res) => {
 });
 
 app.get('/petView', isAuthenticated, (req, res) => {
-    res.render('petView.ejs');
+    let userID = req.session.userID;
+    let petName = "Pet"
+    let petHunger = 50;
+    db.get(`SELECT * FROM Pets WHERE uID = ?`, [userID], (err, row) => {
+        if (err) {
+            throw err;
+        }
+        if (row) {
+            petName = row.petName;
+            petHunger = row.petHunger;
+        } else {
+            res.redirect('/adopt');
+        }
+    })
+    res.render('petView.ejs', { petName: petName, petHunger: petHunger });
 });
 
 app.listen(3000, () => {
