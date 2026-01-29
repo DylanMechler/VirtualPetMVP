@@ -19,69 +19,46 @@
     <h1 id="petNameDisplay">This is <%-petName%></h1>
     <p>Hunger drains every 10 seconds</p>
     <p id="hungerDisplay">Hunger: <%-petHunger%>/50</p>
-    <p id="happinessDisplay">Happiness: <%-petHappiness%>/50</p>
     <button onclick="feedPet()">Feed Pet</button>
     <div class="square"></div>
     <script>
         const xhttp = new XMLHttpRequest();
         const hungerDisplay = document.getElementById('hungerDisplay');
-        const happinessDisplay = document.getElementById('happinessDisplay');
         const petNameDisplay = document.getElementById('petNameDisplay');
         var petName = "<%-petName%>";
         var petHunger = parseInt(`<%-petHunger%>`);
-        var petHappiness = parseInt(`<%-petHappiness%>`);
-        hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
-        happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
+        hungerDisplay.innerText = "Hunger:" + petHunger + "/50";
         petNameDisplay.innerText = "This is " + petName;
         // Create Pet Hunger stat and drain
         function petHungerDrain() {
             if (petHunger > 0) {
                 petHunger -= 1;
-                console.log("Pet Hunger: ", petHunger);
-                sendStats(petHunger, petHappiness)
-                hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
+                console.log("Pet Hunger:", petHunger);
+                sendHunger(petHunger)
+                hungerDisplay.innerText = "Hunger:" + petHunger + "/50";
             } else {
                 console.log("Hunger level has reached 0.");
                 alert("Your pet " + petName + " has died of starvation.");
             }
         }
-
-        function petHappinessDrain() {
-            if (petHappiness > 0) {
-                petHappiness -= 1;
-                console.log("Pet Happiness: ", petHappiness);
-                sendStats(petHunger, petHappiness)
-                happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
-            } else {
-                console.log("Happiness level has reached 0.");
-                alert("Your pet " + petName + " has died of boredom.");
-            }
-        }
-
-        function statChange() {
-            petHungerDrain();
-            petHappinessDrain();
-        }
-
-        setInterval(statChange, 10000);
-
+        setInterval(petHungerDrain, 10000);
         // Button to feed pet
         function feedPet() {
             console.log(petHunger)
             if (petHunger < 50) {
                 petHunger += 1;
-                sendStats(petHunger, petHappiness)
-                hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
+                sendHunger(petHunger)
+                hungerDisplay.innerText = "Hunger:" + petHunger + "/50";
             } else {
                 console.log("Pet is full.");
             }
         }
 
         //Send Hunger Stat to Server
-        function sendStats(hunger, happiness) {
+        function sendHunger(hunger) {
             xhttp.open("POST", "/petView", true);
             xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhttp.send(JSON.stringify({ petHunger: hunger, petHappiness: happiness }));
+            xhttp.send(JSON.stringify({ petHunger: hunger }));
         }
 
     </script>
