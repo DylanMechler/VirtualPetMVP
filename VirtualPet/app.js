@@ -108,6 +108,7 @@ app.get('/adopt', isAuthenticated, (req, res) => {
 app.post('/adopt', (req, res) => {
     var petName = req.body.petName;
     var uID = req.session.userID;
+    
     db.run('INSERT INTO Pets (petName, uID, petHunger, petHappiness) VALUES (?, ?, ?, ?)', [petName, uID, 50, 50], function (err) {
         if (err) {
             return console.error(err.message);
