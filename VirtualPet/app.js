@@ -108,16 +108,14 @@ app.get('/adopt', isAuthenticated, (req, res) => {
 app.post('/adopt', (req, res) => {
     var petName = req.body.petName;
     var uID = req.session.userID;
-
-    db.run('INSERT INTO Pets (petName, uID) VALUES (?, ?)', [petName, uID], function (err) {
+    db.run('INSERT INTO Pets (petName, uID, petHunger, petHappiness) VALUES (?, ?, ?, ?)', [petName, uID, 50, 50], function (err) {
         if (err) {
             return console.error(err.message);
+        } else {
+            console.log(`A row has been inserted with rowid ${this.lastID}`);
+            res.redirect('/');
         }
-        console.log(`A row has been inserted with rowid ${this.lastID}`);
-        res.redirect('/');
     });
-
-    db.close();
 });
 
 app.get('/petView', isAuthenticated, (req, res) => {
@@ -131,7 +129,8 @@ app.get('/petView', isAuthenticated, (req, res) => {
         if (row) {
             petName = row.petName;
             petHunger = row.petHunger;
-            res.render('petView.ejs', { petName: petName, petHunger: petHunger });
+            petHappiness = row.petHappiness;
+            res.render('petView.ejs', { petName: petName, petHunger: petHunger, petHappiness: petHappiness });
         } else {
             res.redirect('/adopt');
         }
@@ -141,11 +140,12 @@ app.get('/petView', isAuthenticated, (req, res) => {
 app.post('/petView', (req, res) => {
     let userID = req.session.userID;
     const hunger = req.body.petHunger;
-    db.run(`UPDATE Pets SET petHunger = ? WHERE uID = ?`, [hunger, userID], function (err) {
+    const happiness = req.body.petHappiness;
+    db.run(`UPDATE Pets SET petHunger = ?, petHappiness = ? WHERE uID = ?`, [hunger, happiness, userID], function (err) {
         if (err) {
             return console.error(err.message);
         } else {
-            console.log("Hunger Saved");
+            console.log("Stats Saved");
         }
     });
 });
