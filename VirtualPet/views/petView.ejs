@@ -7,10 +7,11 @@
     <title>View Pet Page</title>
     <style>
         #square {
-            width: 100px;
-            height: 100px;
+            width: 300px;
+            height: 300px;
             background-color: #E48400;
             place-items: center;
+            margin: auto;
         }
     </style>
 </head>
@@ -20,7 +21,7 @@
     <p>Hunger drains every 10 seconds</p>
     <p id="hungerDisplay">Hunger: <%-petHunger%>/50</p>
     <button onclick="feedPet()">Feed Pet</button>
-    <div class="square"></div>
+    <div class="square" id="square"></div>
     <script>
         const xhttp = new XMLHttpRequest();
         const hungerDisplay = document.getElementById('hungerDisplay');
@@ -61,6 +62,16 @@
             xhttp.send(JSON.stringify({ petHunger: hunger }));
         }
 
+        function colorChange(petHunger, petHappiness) {
+            const square = document.getElementById('square');
+            if (petHunger || petHappiness < 30) {
+                square.style.backgroundColor = "#FF0000"; 
+            }
+            else if (petHunger && petHappiness >= 30) {
+                square.style.backgroundColor = "#E48400"; 
+            }
+        }
+        setInterval(colorChange, 100);
     </script>
 </body>
 

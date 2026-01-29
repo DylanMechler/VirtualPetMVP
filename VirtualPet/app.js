@@ -109,15 +109,13 @@ app.post('/adopt', (req, res) => {
     var petName = req.body.petName;
     var uID = req.session.userID;
 
-    db.run('INSERT INTO Pets (petName, uID) VALUES (?, ?)', [petName, uID], function (err) {
+    db.run('INSERT INTO Pets (petName, uID, petHunger, petHappiness) VALUES (?, ?, ?, ?)', [petName, uID, 50, 50], function (err) {
         if (err) {
             return console.error(err.message);
         }
         console.log(`A row has been inserted with rowid ${this.lastID}`);
         res.redirect('/');
     });
-
-    db.close();
 });
 
 app.get('/petView', isAuthenticated, (req, res) => {
