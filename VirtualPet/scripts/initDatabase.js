@@ -25,6 +25,7 @@ db.run(`CREATE TABLE "Pets" (
 	"petID"	INTEGER NOT NULL UNIQUE,
 	"uID"	INTEGER NOT NULL UNIQUE,
 	"petHunger"	INTEGER NOT NULL,
+    "petHappiness"	INTEGER NOT NULL,
 	PRIMARY KEY("petID" AUTOINCREMENT)
 )`, (err) => {
     if (err) {
