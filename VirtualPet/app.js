@@ -133,11 +133,19 @@ app.post('/petView', (req, res) => {
     let userID = req.session.userID;
     const hunger = req.body.petHunger;
     const happiness = req.body.petHappiness;
+    const money = req.body.money;
     db.run(`UPDATE Pets SET petHunger = ?, petHappiness = ? WHERE uID = ?`, [hunger, happiness, userID], function (err) {
         if (err) {
             return console.error(err.message);
         } else {
             console.log("Stats Saved");
+        }
+    });
+    db.run(`UPDATE users SET money = ? WHERE uid = ?`, [money, userID], function (err) {
+        if (err) {
+            return console.error(err.message);
+        } else {
+            console.log("Money Saved");
         }
     });
 });

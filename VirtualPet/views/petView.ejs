@@ -44,7 +44,7 @@
             if (petHunger > 0) {
                 petHunger -= 1;
                 console.log("Pet Hunger: ", petHunger);
-                sendStats(petHunger, petHappiness)
+                sendStats(petHunger, petHappiness, money)
                 hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
             } else {
                 console.log("Hunger level has reached 0.");
@@ -56,11 +56,19 @@
             if (petHappiness > 0) {
                 petHappiness -= 1;
                 console.log("Pet Happiness: ", petHappiness);
-                sendStats(petHunger, petHappiness)
+                sendStats(petHunger, petHappiness, money)
                 happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
             } else {
                 console.log("Happiness level has reached 0.");
                 alert("Your pet " + petName + " has died of boredom.");
+            }
+        }
+
+        function gainMoney() {
+            if (petHunger >= 20 && petHappiness >= 20) {
+                money += 1;
+                console.log("Money: ", money);
+                sendStats(petHunger, petHappiness, money)
             }
         }
 
@@ -70,6 +78,7 @@
             if (statChangeCounter >= 100) {
                 petHungerDrain();
                 petHappinessDrain();
+                gainMoney();
                 statChangeCounter = 0;
             }
         }
@@ -83,7 +92,7 @@
                 money -= 1;
                 if (petHunger < 50) {
                     petHunger += 2;
-                    sendStats(petHunger, petHappiness)
+                    sendStats(petHunger, petHappiness, money)
                     colorChange(petHunger, petHappiness)
                     hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
                 } else {
@@ -100,7 +109,7 @@
                 money -= 1;
                 if (petHappiness < 50) {
                     petHappiness += 2;
-                    sendStats(petHunger, petHappiness)
+                    sendStats(petHunger, petHappiness, money)
                     colorChange(petHunger, petHappiness)
                     happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
                 } else {
@@ -112,10 +121,10 @@
         }
 
         //Send Hunger Stat to Server
-        function sendStats(hunger, happiness) {
+        function sendStats(hunger, happiness, money) {
             xhttp.open("POST", "/petView", true);
             xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhttp.send(JSON.stringify({ petHunger: hunger, petHappiness: happiness }));
+            xhttp.send(JSON.stringify({ petHunger: hunger, petHappiness: happiness, money: money }));
         }
 
         function colorChange() {
