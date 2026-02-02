@@ -22,6 +22,7 @@
     <p id="hungerDisplay">Hunger: <%-petHunger%>/50</p>
     <p id="happinessDisplay">Happiness: <%-petHappiness%>/50</p>
     <button onclick="feedPet()">Feed Pet</button>
+    <button onclick="playWithPet()">Play With Pet</button>
     <div class="square" id="square"></div>
     <script>
         const xhttp = new XMLHttpRequest();
@@ -31,6 +32,7 @@
         var petName = "<%-petName%>";
         var petHunger = parseInt(`<%-petHunger%>`);
         var petHappiness = parseInt(`<%-petHappiness%>`);
+        var statChangeCounter = 0;
         hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
         happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
         petNameDisplay.innerText = "This is " + petName;
@@ -60,11 +62,16 @@
         }
 
         function statChange() {
-            petHungerDrain();
-            petHappinessDrain();
+            colorChange();
+            statChangeCounter += 1;
+            if (statChangeCounter >= 100) {
+                petHungerDrain();
+                petHappinessDrain();
+                statChangeCounter = 0;
+            }
         }
 
-        setInterval(statChange, 10000);
+        setInterval(statChange, 100);
 
         // Button to feed pet
         function feedPet() {
@@ -79,6 +86,18 @@
             }
         }
 
+        function playWithPet() {
+            console.log(petHappiness)
+            if (petHappiness < 50) {
+                petHappiness += 1;
+                sendStats(petHunger, petHappiness)
+                colorChange(petHunger, petHappiness)
+                happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
+            } else {
+                console.log("Pet is happy.");
+            }
+        }
+
         //Send Hunger Stat to Server
         function sendStats(hunger, happiness) {
             xhttp.open("POST", "/petView", true);
@@ -86,15 +105,14 @@
             xhttp.send(JSON.stringify({ petHunger: hunger, petHappiness: happiness }));
         }
 
-        function colorChange(petHunger, petHappiness) {
+        function colorChange() {
             const square = document.getElementById('square');
-            if (petHunger < 30 || petHappiness < 30) {
-                square.style.backgroundColor = "#FF0000"; 
-            } else if (petHunger >= 30 && petHappiness >= 30) {
-                square.style.backgroundColor = "#E48400"; 
+            if (petHunger < 20 || petHappiness < 20) {
+                square.style.backgroundColor = "#FF0000";
+            } else if (petHunger >= 20 && petHappiness >= 20) {
+                square.style.backgroundColor = "#E48400";
             }
         }
-        setInterval(colorChange, 10000);
     </script>
 </body>
 
