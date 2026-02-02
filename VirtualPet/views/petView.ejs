@@ -30,6 +30,7 @@
         const hungerDisplay = document.getElementById('hungerDisplay');
         const happinessDisplay = document.getElementById('happinessDisplay');
         const petNameDisplay = document.getElementById('petNameDisplay');
+        const moneyDisplay = document.getElementById('moneyDisplay');
         var petName = "<%-petName%>";
         var petHunger = parseInt(`<%-petHunger%>`);
         var petHappiness = parseInt(`<%-petHappiness%>`);
@@ -74,6 +75,7 @@
 
         function statChange() {
             colorChange();
+            moneyDisplay.innerText = "Money: " + money;
             statChangeCounter += 1;
             if (statChangeCounter >= 100) {
                 petHungerDrain();
