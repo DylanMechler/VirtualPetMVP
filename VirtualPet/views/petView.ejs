@@ -21,6 +21,7 @@
     <p>Hunger drains every 10 seconds</p>
     <p id="hungerDisplay">Hunger: <%-petHunger%>/50</p>
     <p id="happinessDisplay">Happiness: <%-petHappiness%>/50</p>
+    <p id="moneyDisplay">Money: <%-money%></p>
     <button onclick="feedPet()">Feed Pet</button>
     <button onclick="playWithPet()">Play With Pet</button>
     <div class="square" id="square"></div>
@@ -32,9 +33,11 @@
         var petName = "<%-petName%>";
         var petHunger = parseInt(`<%-petHunger%>`);
         var petHappiness = parseInt(`<%-petHappiness%>`);
+        var money = parseInt(`<%-money%>`);
         var statChangeCounter = 0;
         hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
         happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
+        moneyDisplay.innerText = "Money: " + money;
         petNameDisplay.innerText = "This is " + petName;
         // Create Pet Hunger stat and drain
         function petHungerDrain() {
@@ -76,25 +79,35 @@
         // Button to feed pet
         function feedPet() {
             console.log(petHunger)
-            if (petHunger < 50) {
-                petHunger += 1;
-                sendStats(petHunger, petHappiness)
-                colorChange(petHunger, petHappiness)
-                hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
+            if (money >= 1) {
+                money -= 1;
+                if (petHunger < 50) {
+                    petHunger += 2;
+                    sendStats(petHunger, petHappiness)
+                    colorChange(petHunger, petHappiness)
+                    hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
+                } else {
+                    console.log("Pet is full.");
+                }
             } else {
-                console.log("Pet is full.");
+                console.log("Not enough money to feed pet.");
             }
         }
 
         function playWithPet() {
             console.log(petHappiness)
-            if (petHappiness < 50) {
-                petHappiness += 1;
-                sendStats(petHunger, petHappiness)
-                colorChange(petHunger, petHappiness)
-                happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
+            if (money >= 1) {
+                money -= 1;
+                if (petHappiness < 50) {
+                    petHappiness += 2;
+                    sendStats(petHunger, petHappiness)
+                    colorChange(petHunger, petHappiness)
+                    happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
+                } else {
+                    console.log("Pet is happy.");
+                }
             } else {
-                console.log("Pet is happy.");
+                console.log("Not enough money to play with pet.");
             }
         }
 
