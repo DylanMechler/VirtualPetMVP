@@ -21,7 +21,7 @@ app.use(session({
 }));
 
 function isAuthenticated(req, res, next) {
-    if (req.session.user) next()
+    if (req.session.user && req.session.userID) next()
     else res.redirect(`/login`);
 };
 
@@ -44,26 +44,15 @@ app.post('/signup', (req, res) => {
         if (password.length < 8) {
             throw new Error("Password Too Short")
         }
-        db.run(`INSERT INTO users(username, password) VALUES(?, ?)`, [username, password], function (err) {
+        db.run(`INSERT INTO users(username, password, money) VALUES(?, ?, ?)`, [username, password, 0], function (err) {
             try {
                 if (err) {
                     console.log(err.message);
                     throw new Error("Database insertion error");
                 }
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                req.session.user = username;
-                db.get(`SELECT * FROM users WHERE username = ? AND password = ?`, [username, password], (err, row) => {
-                    if (err) {
-                        throw err;
-                    }
-                    if (row) {
-                        req.session.userID = row.uid;
-                    } else {
-                        console.log("Error: Row Not Found After Signup");
-                        res.redirect('/');
-                    }
-                })
-                res.redirect('/');
+                res.redirect('/login');
+
             } catch (error) {
                 res.redirect('/signup');
             }
@@ -91,6 +80,7 @@ app.post('/login', (req, res) => {
             if (row) {
                 req.session.user = username;
                 req.session.userID = row.uid;
+                req.session.money = row.money;
                 res.redirect('/');
             } else {
                 res.redirect('/login');
