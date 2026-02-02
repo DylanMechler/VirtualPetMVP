@@ -72,6 +72,7 @@
             if (petHunger < 50) {
                 petHunger += 1;
                 sendStats(petHunger, petHappiness)
+                colorChange(petHunger, petHappiness)
                 hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
             } else {
                 console.log("Pet is full.");
@@ -87,14 +88,13 @@
 
         function colorChange(petHunger, petHappiness) {
             const square = document.getElementById('square');
-            if (petHunger || petHappiness < 30) {
+            if (petHunger < 30 || petHappiness < 30) {
                 square.style.backgroundColor = "#FF0000"; 
-            }
-            else if (petHunger && petHappiness >= 30) {
+            } else if (petHunger >= 30 && petHappiness >= 30) {
                 square.style.backgroundColor = "#E48400"; 
             }
         }
-        setInterval(colorChange, 100);
+        setInterval(colorChange, 10000);
     </script>
 </body>
 
