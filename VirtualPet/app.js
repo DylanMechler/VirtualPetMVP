@@ -111,6 +111,7 @@ app.post('/adopt', (req, res) => {
 
 app.get('/petView', isAuthenticated, (req, res) => {
     let userID = req.session.userID;
+    let money = req.session.money;
     let petName = "Pet";
     let petHunger = 50;
     db.get(`SELECT * FROM Pets WHERE uID = ?`, [userID], (err, row) => {
@@ -121,7 +122,7 @@ app.get('/petView', isAuthenticated, (req, res) => {
             petName = row.petName;
             petHunger = row.petHunger;
             petHappiness = row.petHappiness;
-            res.render('petView.ejs', { petName: petName, petHunger: petHunger, petHappiness: petHappiness });
+            res.render('petView.ejs', { petName: petName, petHunger: petHunger, petHappiness: petHappiness, money: money });
         } else {
             res.redirect('/adopt');
         }
@@ -132,11 +133,19 @@ app.post('/petView', (req, res) => {
     let userID = req.session.userID;
     const hunger = req.body.petHunger;
     const happiness = req.body.petHappiness;
+    const money = req.body.money;
     db.run(`UPDATE Pets SET petHunger = ?, petHappiness = ? WHERE uID = ?`, [hunger, happiness, userID], function (err) {
         if (err) {
             return console.error(err.message);
         } else {
             console.log("Stats Saved");
+        }
+    });
+    db.run(`UPDATE users SET money = ? WHERE uid = ?`, [money, userID], function (err) {
+        if (err) {
+            return console.error(err.message);
+        } else {
+            console.log("Money Saved");
         }
     });
 });
