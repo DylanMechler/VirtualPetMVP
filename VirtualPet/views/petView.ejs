@@ -94,6 +94,9 @@
                 money -= 1;
                 if (petHunger < 50) {
                     petHunger += 2;
+                    if (petHunger > 50) {
+                        petHunger = 50;
+                    }
                     sendStats(petHunger, petHappiness, money)
                     colorChange(petHunger, petHappiness)
                     hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
@@ -111,6 +114,9 @@
                 money -= 1;
                 if (petHappiness < 50) {
                     petHappiness += 2;
+                    if (petHappiness > 50) {
+                        petHappiness = 50;
+                    }
                     sendStats(petHunger, petHappiness, money)
                     colorChange(petHunger, petHappiness)
                     happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
