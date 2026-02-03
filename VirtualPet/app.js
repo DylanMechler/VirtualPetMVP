@@ -92,7 +92,17 @@ app.post('/login', (req, res) => {
 })
 
 app.get('/adopt', isAuthenticated, (req, res) => {
-    res.render('adopt.ejs');
+    const userID = req.session.userID;
+    db.get(`SELECT * FROM Pets WHERE uID = ?`, [userID], (err, row) => {
+        if (err) {
+            throw err;
+        }
+        if (row) {
+            res.redirect('/petView');
+        } else {
+            res.render('adopt.ejs');
+        }
+    });
 });
 
 app.post('/adopt', (req, res) => {
