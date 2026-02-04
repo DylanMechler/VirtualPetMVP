@@ -13,6 +13,10 @@
             place-items: center;
             margin: auto;
         }
+
+        #abandonButton {
+            background-color: #FF0000;
+        }
     </style>
 </head>
 
@@ -24,6 +28,7 @@
     <p id="moneyDisplay">Money: <%-money%></p>
     <button onclick="feedPet()">Feed Pet</button>
     <button onclick="playWithPet()">Play With Pet</button>
+    <button onclick="abandonPet()" id="abandonButton">Abandon Pet</button>
     <div class="square" id="square"></div>
     <script>
         const xhttp = new XMLHttpRequest();
@@ -35,6 +40,7 @@
         var petHunger = parseInt(`<%-petHunger%>`);
         var petHappiness = parseInt(`<%-petHappiness%>`);
         var money = parseInt(`<%-money%>`);
+        var petID = parseInt(`<%-petID%>`);
         var statChangeCounter = 0;
         hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
         happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
@@ -126,6 +132,14 @@
             } else {
                 console.log("Not enough money to play with pet.");
             }
+        }
+
+        function abandonPet() {
+            console.log(petID)
+            xhttp.open("POST", "/abandonPet", true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({ petID: petID }));
+            window.location.href = "/";
         }
 
         //Send Hunger Stat to Server

@@ -111,7 +111,7 @@ app.post('/adopt', (req, res) => {
 
     db.run('INSERT INTO Pets (petName, uID, petHunger, petHappiness) VALUES (?, ?, ?, ?)', [petName, uID, 50, 50], function (err) {
         if (err) {
-            return console.error(err.message);
+            throw err;
         } else {
             console.log(`A row has been inserted with rowid ${this.lastID}`);
             res.redirect('/');
@@ -132,7 +132,8 @@ app.get('/petView', isAuthenticated, (req, res) => {
             petName = row.petName;
             petHunger = row.petHunger;
             petHappiness = row.petHappiness;
-            res.render('petView.ejs', { petName: petName, petHunger: petHunger, petHappiness: petHappiness, money: money });
+            petID = row.petID;
+            res.render('petView.ejs', { petName: petName, petHunger: petHunger, petHappiness: petHappiness, money: money, petID: petID });
         } else {
             res.redirect('/adopt');
         }
@@ -146,19 +147,36 @@ app.post('/petView', (req, res) => {
     const money = req.body.money;
     db.run(`UPDATE Pets SET petHunger = ?, petHappiness = ? WHERE uID = ?`, [hunger, happiness, userID], function (err) {
         if (err) {
-            return console.error(err.message);
-        } else {
-            console.log("Stats Saved");
+            throw err;
         }
     });
     db.run(`UPDATE users SET money = ? WHERE uid = ?`, [money, userID], function (err) {
         if (err) {
-            return console.error(err.message);
+            throw err;
         } else {
-            console.log("Money Saved");
+            req.session.money = money;
         }
     });
 });
+
+app.post('/abandonPet', (req, res) => {
+    let petID = req.body.petID;
+    let petAbandoned = false;
+    db.run(`DELETE FROM Pets WHERE petID = ?`, [petID], function (err) {
+        if (err) {
+            throw err;
+        } else {
+            console.log("Pet Abandoned 1");
+            petAbandoned = true;
+            console.log(petAbandoned);
+            if (petAbandoned) {
+                console.log("Pet Abandoned 2");
+            } else {
+                console.log("Pet Abandon Failed");
+            }
+        }
+    });
+})
 
 app.listen(3000, () => {
     console.log("Started HTTP Server on port 3000");
