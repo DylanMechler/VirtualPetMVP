@@ -22,7 +22,7 @@
 
 <body>
     <h1 id="petNameDisplay">This is <%-petName%></h1>
-    <p>Hunger drains every 10 seconds</p>
+    <p>Stats drain every 10 seconds</p>
     <p id="hungerDisplay">Hunger: <%-petHunger%>/50</p>
     <p id="happinessDisplay">Happiness: <%-petHappiness%>/50</p>
     <p id="moneyDisplay">Money: <%-money%></p>
@@ -51,7 +51,6 @@
             if (petHunger > 0) {
                 petHunger -= 1;
                 console.log("Pet Hunger: ", petHunger);
-                sendStats(petHunger, petHappiness, money)
                 hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
             } else {
                 console.log("Hunger level has reached 0.");
@@ -63,7 +62,6 @@
             if (petHappiness > 0) {
                 petHappiness -= 1;
                 console.log("Pet Happiness: ", petHappiness);
-                sendStats(petHunger, petHappiness, money)
                 happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
             } else {
                 console.log("Happiness level has reached 0.");
@@ -75,7 +73,6 @@
             if (petHunger >= 20 && petHappiness >= 20) {
                 money += 1;
                 console.log("Money: ", money);
-                sendStats(petHunger, petHappiness, money)
             }
         }
 
@@ -87,6 +84,7 @@
                 petHungerDrain();
                 petHappinessDrain();
                 gainMoney();
+                sendStats(petHunger, petHappiness, money)
                 statChangeCounter = 0;
             }
         }
