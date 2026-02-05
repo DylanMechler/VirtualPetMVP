@@ -25,6 +25,8 @@ function isAuthenticated(req, res, next) {
     else res.redirect(`/login`);
 };
 
+var savedMoney = 0;
+
 //Routes
 app.get('/', (req, res) => {
     res.render('home.ejs');
@@ -80,7 +82,7 @@ app.post('/login', (req, res) => {
             if (row) {
                 req.session.user = username;
                 req.session.userID = row.uid;
-                req.session.money = row.money;
+                savedMoney = row.money;
                 res.redirect('/');
             } else {
                 res.redirect('/login');
@@ -121,7 +123,7 @@ app.post('/adopt', (req, res) => {
 
 app.get('/petView', isAuthenticated, (req, res) => {
     let userID = req.session.userID;
-    let money = req.session.money;
+    let money = savedMoney;
     let petName = "Pet";
     let petHunger = 50;
     db.get(`SELECT * FROM Pets WHERE uID = ?`, [userID], (err, row) => {
@@ -154,7 +156,7 @@ app.post('/petView', (req, res) => {
         if (err) {
             throw err;
         } else {
-            req.session.money = money;
+            savedMoney = money;
         }
     });
 });
