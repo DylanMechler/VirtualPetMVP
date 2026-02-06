@@ -118,11 +118,7 @@ app.post('/adopt', (req, res) => {
             console.log(`A row has been inserted with rowid ${this.lastID}`);
             res.redirect('/');
         }
-        console.log(`A row has been inserted with rowid ${this.lastID}`);
-        res.redirect('/');
     });
-
-    db.close();
 });
 
 app.get('/petView', isAuthenticated, (req, res) => {
