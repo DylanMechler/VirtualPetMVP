@@ -7,60 +7,153 @@
     <title>View Pet Page</title>
     <style>
         #square {
-            width: 100px;
-            height: 100px;
+            width: 300px;
+            height: 300px;
             background-color: #E48400;
             place-items: center;
+            margin: auto;
+        }
+
+        #abandonButton {
+            background-color: #FF0000;
         }
     </style>
 </head>
 
 <body>
     <h1 id="petNameDisplay">This is <%-petName%></h1>
-    <p>Hunger drains every 10 seconds</p>
+    <p>Stats drain every 10 seconds</p>
     <p id="hungerDisplay">Hunger: <%-petHunger%>/50</p>
+    <p id="happinessDisplay">Happiness: <%-petHappiness%>/50</p>
+    <p id="moneyDisplay">Money: <%-money%></p>
     <button onclick="feedPet()">Feed Pet</button>
-    <div class="square"></div>
+    <button onclick="playWithPet()">Play With Pet</button>
+    <button onclick="abandonPet()" id="abandonButton">Abandon Pet</button>
+    <div class="square" id="square"></div>
     <script>
         const xhttp = new XMLHttpRequest();
         const hungerDisplay = document.getElementById('hungerDisplay');
         const petNameDisplay = document.getElementById('petNameDisplay');
+        const moneyDisplay = document.getElementById('moneyDisplay');
         var petName = "<%-petName%>";
         var petHunger = parseInt(`<%-petHunger%>`);
-        hungerDisplay.innerText = "Hunger:" + petHunger + "/50";
+        var petHappiness = parseInt(`<%-petHappiness%>`);
+        var money = parseInt(`<%-money%>`);
+        var petID = parseInt(`<%-petID%>`);
+        var statChangeCounter = 0;
+        hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
+        happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
+        moneyDisplay.innerText = "Money: " + money;
         petNameDisplay.innerText = "This is " + petName;
         // Create Pet Hunger stat and drain
         function petHungerDrain() {
             if (petHunger > 0) {
                 petHunger -= 1;
-                console.log("Pet Hunger:", petHunger);
-                sendHunger(petHunger)
-                hungerDisplay.innerText = "Hunger:" + petHunger + "/50";
+                console.log("Pet Hunger: ", petHunger);
+                hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
             } else {
                 console.log("Hunger level has reached 0.");
                 alert("Your pet " + petName + " has died of starvation.");
             }
         }
-        setInterval(petHungerDrain, 10000);
-        // Button to feed pet
-        function feedPet() {
-            console.log(petHunger)
-            if (petHunger < 50) {
-                petHunger += 1;
-                sendHunger(petHunger)
-                hungerDisplay.innerText = "Hunger:" + petHunger + "/50";
+
+        function petHappinessDrain() {
+            if (petHappiness > 0) {
+                petHappiness -= 1;
+                console.log("Pet Happiness: ", petHappiness);
+                happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
             } else {
-                console.log("Pet is full.");
+                console.log("Happiness level has reached 0.");
+                alert("Your pet " + petName + " has died of boredom.");
             }
         }
 
-        //Send Hunger Stat to Server
-        function sendHunger(hunger) {
-            xhttp.open("POST", "/petView", true);
-            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhttp.send(JSON.stringify({ petHunger: hunger }));
+        function gainMoney() {
+            if (petHunger >= 20 && petHappiness >= 20) {
+                money += 1;
+                console.log("Money: ", money);
+            }
         }
 
+        function statChange() {
+            colorChange();
+            moneyDisplay.innerText = "Money: " + money;
+            statChangeCounter += 1;
+            if (statChangeCounter >= 100) {
+                petHungerDrain();
+                petHappinessDrain();
+                gainMoney();
+                sendStats(petHunger, petHappiness, money)
+                statChangeCounter = 0;
+            }
+        }
+
+        setInterval(statChange, 100);
+
+        // Button to feed pet
+        function feedPet() {
+            console.log(petHunger)
+            if (money >= 1) {
+                money -= 1;
+                if (petHunger < 50) {
+                    petHunger += 2;
+                    if (petHunger > 50) {
+                        petHunger = 50;
+                    }
+                    sendStats(petHunger, petHappiness, money)
+                    colorChange(petHunger, petHappiness)
+                    hungerDisplay.innerText = "Hunger: " + petHunger + "/50";
+                } else {
+                    console.log("Pet is full.");
+                }
+            } else {
+                console.log("Not enough money to feed pet.");
+            }
+        }
+
+        function playWithPet() {
+            console.log(petHappiness)
+            if (money >= 1) {
+                money -= 1;
+                if (petHappiness < 50) {
+                    petHappiness += 2;
+                    if (petHappiness > 50) {
+                        petHappiness = 50;
+                    }
+                    sendStats(petHunger, petHappiness, money)
+                    colorChange(petHunger, petHappiness)
+                    happinessDisplay.innerText = "Happiness: " + petHappiness + "/50";
+                } else {
+                    console.log("Pet is happy.");
+                }
+            } else {
+                console.log("Not enough money to play with pet.");
+            }
+        }
+
+        function abandonPet() {
+            console.log(petID)
+            xhttp.open("POST", "/abandonPet", true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({ petID: petID }));
+            window.location.href = "/";
+        }
+
+        //Send Hunger Stat to Server
+        function sendStats(hunger, happiness, money) {
+            xhttp.open("POST", "/petView", true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({ petHunger: hunger, petHappiness: happiness, money: money }));
+        }
+
+        function colorChange() {
+            const square = document.getElementById('square');
+            if (petHunger < 20 || petHappiness < 20) {
+                square.style.backgroundColor = "#FF0000";
+            } else if (petHunger >= 20 && petHappiness >= 20) {
+                square.style.backgroundColor = "#E48400";
+            }
+        }
     </script>
 </body>
 

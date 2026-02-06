@@ -12,6 +12,7 @@ db.run(`CREATE TABLE "users" (
 	"uid"	INTEGER NOT NULL UNIQUE,
 	"username"	TEXT NOT NULL UNIQUE,
 	"password"	TEXT NOT NULL,
+    "money"	INTEGER,
 	PRIMARY KEY("uid" AUTOINCREMENT)
 )`, (err) => {
     if (err) {
@@ -24,8 +25,8 @@ db.run(`CREATE TABLE "Pets" (
 	"petName"	TEXT NOT NULL,
 	"petID"	INTEGER NOT NULL UNIQUE,
 	"uID"	INTEGER NOT NULL UNIQUE,
-	"petHunger"	INTEGER NOT NULL,
-    "petHappiness"	INTEGER NOT NULL,
+	"petHunger"	INTEGER,
+    "petHappiness"	INTEGER,
 	PRIMARY KEY("petID" AUTOINCREMENT)
 )`, (err) => {
     if (err) {
